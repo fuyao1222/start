@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轻启动 - 帮助孩子低阻力进入学习状态</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#1E293B',    // 深蓝
+                            slate: '#0F172A',   // 极深蓝
+                            white: '#F8FAFC',   // 米白
+                            orange: '#F97316',  // 柔和橙
+                            gray: '#64748B',    // 辅助灰
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .h5-container {
+            max-width: 480px;
+            min-height: 100vh;
+        }
+        .one-screen {
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex justify-center items-start min-h-screen font-sans antialiased">
+
+    <!-- 主容器 -->
+    <div class="h5-container w-full bg-brand-white shadow-xl flex flex-col justify-between relative overflow-hidden">
+        
+        <!-- 主内容区域 -->
+        <main class="flex-grow flex flex-col justify-center px-6 py-4">
+            
+            <!-- P1: 首页 -->
+            <section id="view-p1" class="space-y-8 py-10">
+                <div class="space-y-4 text-center">
+                    <span class="inline-block bg-orange-100 text-brand-orange text-xs px-3 py-1.5 rounded-full font-medium tracking-wide">
+                        家庭学习状态进入诊断
+                    </span>
+                    <h1 id="p1-title" class="text-3xl font-bold text-brand-slate leading-snug tracking-tight">
+                        <!-- 动态 A/B 测试标题 -->
+                    </h1>
+                    <p class="text-brand-gray text-sm font-light">
+                        3分钟定位当下真实的进入阻力，结束无意义的权力消耗
+                    </p>
+                </div>
+
+                <!-- 诊断机制卡片 -->
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 space-y-4">
+                    <h3 class="text-xs font-semibold text-brand-slate tracking-widest uppercase">诊断说明</h3>
+                    <ul class="space-y-2.5 text-xs text-brand-gray">
+                        <li class="flex items-start">
+                            <span class="text-brand-orange mr-2">✦</span>
+                            <span><strong>剥离主观指责</strong>：不评价孩子“懒或磨蹭”，只分析前额叶罢工的生理与心理诱因。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-brand-orange mr-2">✦</span>
+                            <span><strong>四维打分系统</strong>：基于场景、能量、情绪与任务认知多重因子计算判定。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="pt-4">
+                    <button onclick="startDiagnostic()" class="w-full bg-brand-orange text-white py-4 px-6 rounded-xl font-medium shadow-lg shadow-orange-500/20 active:scale-[0.98] transition-transform text-center">
+                        开始识别
+                    </button>
+                </div>
+            </section>
+
+            <!-- P2: 诊断页 -->
+            <section id="view-p2" class="hidden space-y-6 py-4">
+                <!-- 进度条 -->
+                <div class="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-brand-orange h-full transition-all duration-300" style="width: 20%"></div>
+                </div>
+
+                <!-- 问题与卡片 -->
+                <div id="question-card" class="space-y-6">
+                    <div class="space-y-1">
+                        <span id="question-num" class="text-xs text-brand-orange font-bold uppercase tracking-wider">问题 1/5</span>
+                        <h2 id="question-title" class="text-xl font-bold text-brand-slate">前置场景</h2>
+                    </div>
+
+                    <!-- 选项容器 -->
+                    <div id="options-container" class="space-y-3">
+                        <!-- JS 动态注入 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- P3 & P4: AI结果页（严格一屏，不滚屏） -->
+            <section id="view-p3-p4" class="hidden space-y-4 py-2 one-screen">
+                
+                <!-- 截图卡片区 -->
+                <div id="diagnostic-card" class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm space-y-4 relative">
+                    
+                    <div class="border-b border-dashed border-slate-200 pb-3 flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] text-brand-gray tracking-wider">《轻启动》状态检测报告</span>
+                            <h2 class="text-md font-bold text-brand-slate mt-0.5">孩子学习进入阻力分析</h2>
+                        </div>
+                        <span class="bg-slate-100 text-brand-slate text-[9px] px-2 py-0.5 rounded font-mono">ID: <span id="card-user-id"></span></span>
+                    </div>
+
+                    <!-- 模块 1：前置场景回显 -->
+                    <div class="bg-slate-50 border border-slate-100 px-3.5 py-2.5 rounded-lg flex items-start gap-2">
+                        <span class="text-brand-orange text-xs mt-0.5">📍</span>
+                        <p id="context-narrative" class="text-xs text-brand-gray leading-normal">
+                            <!-- 动态诱因回显 -->
+                        </p>
+                    </div>
+
+                    <!-- 模块 2：当前状态判定 -->
+                    <div class="space-y-1">
+                        <span class="text-xs text-brand-gray">阻力核心状态判定：</span>
+                        <div id="status-title" class="text-xl font-black text-brand-orange tracking-tight">
+                            <!-- 结果名称 -->
+                        </div>
+                    </div>
+
+                    <!-- 模块 3：认知反转渲染区 -->
+                    <div id="variant-content-area" class="space-y-3">
+                        <!-- 动态 A/B 测试内容 -->
+                    </div>
+
+                    <!-- 模块 4 & 5：最危险行为与有效进入方式 -->
+                    <div class="grid grid-cols-1 gap-3 pt-1 border-t border-slate-100">
+                        <div class="bg-red-50/50 p-3 rounded-xl border border-red-100/50">
+                            <span class="text-[11px] text-red-600 font-bold tracking-wider block mb-1">✕ 当前最危险行为（禁忌）</span>
+                            <ul id="status-taboos" class="text-[11px] text-slate-700 space-y-1 list-disc pl-4">
+                                <!-- 禁忌 -->
+                            </ul>
+                        </div>
+                        <div class="bg-emerald-50/50 p-3 rounded-xl border border-emerald-100/50">
+                            <span class="text-[11px] text-emerald-600 font-bold tracking-wider block mb-1">✓ 更有效进入方式（推荐）</span>
+                            <p id="status-recommendation" class="text-[11px] text-slate-700 leading-relaxed">
+                                <!-- 推荐方式 -->
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 模块 6：推荐话术与深度成因 -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1">
+                        <span class="text-[11px] text-brand-gray font-bold tracking-wider block">🗣 话术推荐（直接读这句）：</span>
+                        <p id="status-scripts" class="text-[11px] text-brand-slate font-medium italic">
+                            <!-- 话术 -->
+                        </p>
+                    </div>
+
+                    <!-- 卡片底部免责 -->
+                    <div class="text-[9px] text-brand-gray text-center pt-1 border-t border-slate-100 leading-relaxed">
+                        本诊断仅用于判定当下进入学习时的阻碍等级，不作为人格或智力评估参考。
+                    </div>
+                </div>
+
+                <!-- 物理按钮操作区 -->
+                <div class="space-y-2 pt-1 pb-4">
+                    <button onclick="triggerSaveCard()" class="w-full bg-brand-orange text-white py-3 px-6 rounded-xl font-medium shadow-md hover:bg-orange-600 active:scale-[0.98] transition-transform text-center flex justify-center items-center gap-2 text-xs">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        保存图片 (微信长按或直接截图)
+                    </button>
+                    <button onclick="goToFeedbackPage()" class="w-full bg-slate-100 text-brand-slate py-3 px-6 rounded-xl font-medium hover:bg-slate-200 active:scale-[0.98] transition-transform text-center text-xs">
+                        我用过这个方法了，去反馈成效
+                    </button>
+                </div>
+            </section>
+
+            <!-- P5: 反馈验证页 -->
+            <section id="view-p5" class="hidden space-y-6 py-6 text-center">
+                <div class="space-y-2">
+                    <span class="inline-block bg-orange-100 text-brand-orange text-xs px-3 py-1 rounded-full font-medium">成效反馈</span>
+                    <h2 class="text-2xl font-bold text-brand-slate">使用建议后，孩子有变化吗？</h2>
+                    <p class="text-brand-gray text-xs">您的反馈用于优化评分引擎本地判定修正分</p>
+                </div>
+
+                <div class="space-y-3 pt-4">
+                    <button onclick="submitFeedback('willing_to_sit')" class="w-full bg-white border border-slate-200 text-slate-700 py-3.5 px-4 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors active:scale-[0.98]">
+                        愿意走向书桌了
+                    </button>
+                    <button onclick="submitFeedback('started_first_step')" class="w-full bg-white border border-slate-200 text-slate-700 py-3.5 px-4 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors active:scale-[0.98]">
+                        开始写第一步了
+                    </button>
+                    <button onclick="submitFeedback('emotion_calmed')" class="w-full bg-white border border-slate-200 text-slate-700 py-3.5 px-4 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors active:scale-[0.98]">
+                        情绪缓和了
+                    </button>
+                    <button onclick="submitFeedback('conflict_reduced')" class="w-full bg-white border border-slate-200 text-slate-700 py-3.5 px-4 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors active:scale-[0.98]">
+                        冲突减少了
+                    </button>
+                    <button onclick="submitFeedback('invalid')" class="w-full bg-white border border-slate-200 text-slate-700 py-3.5 px-4 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors active:scale-[0.98]">
+                        完全无效
+                    </button>
+                </div>
+            </section>
+
+            <!-- 反馈感谢页 -->
+            <section id="view-thankyou" class="hidden space-y-6 py-10 text-center">
+                <div class="text-emerald-500 flex justify-center">
+                    <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold text-brand-slate">感谢您的真实数据</h2>
+                    <p class="text-brand-gray text-xs">数据已安全记录，将用于评估当前干预方案的有效性。</p>
+                </div>
+                <div class="pt-6">
+                    <button onclick="restartDiagnostic()" class="w-full bg-brand-slate text-white py-3.5 px-6 rounded-xl font-medium shadow-md active:scale-[0.98] transition-transform">
+                        重新开始诊断
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- 截图引导弹窗 -->
+        <div id="save-guide-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+            <div class="bg-white rounded-2xl p-6 w-full max-w-sm space-y-4 text-center">
+                <h3 class="text-lg font-bold text-brand-slate">截图保存指引</h3>
+                <p class="text-xs text-brand-gray leading-relaxed">
+                    为了最清晰地保存报告，请直接在手机上<strong>屏幕截屏</strong>。您可以将截图发送至朋友圈或保存到相册。
+                </p>
+                <button onclick="closeSaveGuide()" class="w-full bg-brand-orange text-white py-3 rounded-lg text-sm font-medium">
+                    确定
+                </button>
+            </div>
+        </div>
+
+        <footer class="text-center py-4 bg-slate-50 border-t border-slate-100 text-[9px] text-slate-400">
+            © 2026 轻启动 · 科学理解孩子状态 · 隐私保护安全技术
+        </footer>
+    </div>
+
+    <!-- 逻辑控制脚本 -->
+    <script>
+        // 1. 初始化 A/B 测试版本与本地 UID
+        if (!localStorage.getItem('ab_version')) {
+            const versions = ['A', 'B', 'C'];
+            const randomVersion = versions[Math.floor(Math.random() * 3)];
+            localStorage.setItem('ab_version', randomVersion);
+        }
+        let currentABVersion = localStorage.getItem('ab_version');
+
+        if (!localStorage.getItem('user_id')) {
+            localStorage.setItem('user_id', 'UID-' + Math.floor(Math.random() * 900000 + 100000));
+        }
+        const userId = localStorage.getItem('user_id');
+
+        // 2. 第三层标准入口传播文案
+        const fissionCopyConfig = {
+            A: {
+                title: '孩子今日作业阻力评估：10秒分析前额叶抗阻级别',
+                sharedText: '今天适合催作业吗？测测孩子当前的“注意力能量赤字”。'
+            },
+            B: {
+                title: '为什么你越催，孩子越不写？10秒撕下“偷懒对抗”的假面',
+                sharedText: '磨蹭发呆可能因为大脑已经“低电量硬锁死”。写作业前，请先看懂心理防御真相。'
+            },
+            C: {
+                title: '孩子拖延大哭的背后：一份懂他的今日状态报告',
+                sharedText: '当孩子抗拒书桌时，他在经历什么？一个懂他的状态诊断卡。'
+            }
+        };
+
+        // 3. 问题数据库 (Q1-Q5)
+        const questions = [
+            {
+                field: 'trigger_context',
+                title: '当前的前置场景是什么？',
+                options: [
+                    { value: 'after_school', text: '刚放学/刚从辅导班回来' },
+                    { value: 'after_game', text: '刚刚结束娱乐或游戏' },
+                    { value: 'criticized', text: '刚刚被批评或发生语言冲突' },
+                    { value: 'normal', text: '常规学习时间转换点' }
+                ]
+            },
+            {
+                field: 'energy_state',
+                title: '孩子当前的能量状态？',
+                options: [
+                    { value: 'tired', text: '很累' },
+                    { value: 'sleepy', text: '很困' },
+                    { value: 'hungry', text: '很饿' },
+                    { value: 'normal', text: '精力正常' }
+                ]
+            },
+            {
+                field: 'emotion_state',
+                title: '孩子当前的情绪表现？',
+                options: [
+                    { value: 'irritated', text: '烦躁' },
+                    { value: 'angry', text: '生气' },
+                    { value: 'anxious', text: '焦虑' },
+                    { value: 'wronged', text: '委屈' },
+                    { value: 'stable', text: '情绪稳定' }
+                ]
+            },
+            {
+                field: 'task_pressure',
+                title: '孩子如何认知当前的任务？',
+                options: [
+                    { value: 'too_hard', text: '太难了' },
+                    { value: 'too_much', text: '太多了' },
+                    { value: 'no_time', text: '时间不够写不完' },
+                    { value: 'too_boring', text: '太枯燥没意思' },
+                    { value: 'acceptable', text: '可以接受' }
+                ]
+            },
+            {
+                field: 'behavior_state',
+                title: '孩子当前的具体抗拒表现？',
+                options: [
+                    { value: 'staring', text: '呆坐在书桌前发呆/玩文具' },
+                    { value: 'delaying', text: '找各种借口无限磨洋工' },
+                    { value: 'exploding', text: '一提写作业就大叫/摔东西' },
+                    { value: 'escaping', text: '频繁要求上厕所/喝水离开书桌' }
+                ]
+            }
+        ];
+
+        // 4. 五大诊断状态文案数据库 (过滤所有“不是……而是”等敏感字眼)
+        const resultsDatabase = {
+            low_energy: {
+                title: '低能量卡死型',
+                revelation: {
+                    A: '主控因子：生理蓄能断层。前额叶决策与认知网络因化学能源消耗过度，处于系统硬性锁死状态。',
+                    B: '常规认知误区：孩子故意磨蹭逃避。/ 科学机制真相：大脑在启动低电量自我防护，强行开机易导致认知短路。',
+                    C: '他现在精疲力竭了。身体亮起红灯时，哪怕一丁点儿任务也会成为压垮他的大山。'
+                },
+                taboos: ['高频连续催促与时间警告', '强制要求立刻直面厚重作业本', '进行逻辑论证和长期后果说教'],
+                recommendation: '实施 15 分钟无条件缓冲。补充快速吸收的水分与少量糖分，随后以轻量级“微任务拆解”温和导入。',
+                scripts: '“现在不写，我们先喝口水吃点东西，十五分钟后先挑战第一行。”'
+            },
+            exploding: {
+                title: '一催就炸型（控制对抗型）',
+                revelation: {
+                    A: '主控因子：自主权主权防卫。孩子将写作业关联为丧失决策权的被迫服从行为，触发边缘防御系统。',
+                    B: '常规认知误区：孩子脾气坏，对抗父母权威。/ 科学机制真相：孩子在拼命护住“自我控制权”，强压会诱发更剧烈的逆反反应。',
+                    C: '强硬的命令让他觉得自己像个木偶。他用愤怒筑起高墙，期望掌握自己的节奏。'
+                },
+                taboos: ['使用命令、强迫或威胁性措辞', '单方面指派今晚的学习流程和科目顺序', '翻旧账，通过剥夺应有娱乐权益来惩罚对抗'],
+                recommendation: '卸除权力压迫。家长采取无对抗姿态退场，向其提供局部可控的选项，归还其流程选择权。',
+                scripts: '“今天你想先写数学的第一道题，还是先写语文生字？你来选。”'
+            },
+            anxious: {
+                title: '害怕开始型（能力焦虑型）',
+                revelation: {
+                    A: '主控因子：评估任务难度超出其胜任认知，为避免负面挫败反馈产生的回避型拖延。',
+                    B: '常规认知误区：孩子懒惰，不愿意动脑。/ 科学机制真相：高度害怕失败导致大脑选择用拖延自我保护，回避即将到来的否定痛苦。',
+                    C: '那些大块的空白作业本让他感到无助。因为怕写不好被责怪，他迟迟不敢下笔。'
+                },
+                taboos: ['引入同龄孩子进行横向比较', '嘲讽其“这么简单你都不会”', '向其灌输无法按时写完带来的恐吓性后果'],
+                recommendation: '对任务难度进行物理裁剪。绝口不提进度，引导孩子只跨过极易完成的“第一笔”。',
+                scripts: '“没关系，今天我们先写最简单、你一眼就能看出答案的那一题。”'
+            },
+            hurt: {
+                title: '安全感缺失型（委屈退缩型）',
+                revelation: {
+                    A: '主控因子：关系性抗拒与情绪阻绝。言语冲突后，压力荷尔蒙皮质醇处于峰值，防御级别封锁理智。',
+                    B: '常规认知误区：孩子任性，故意装委屈要挟。/ 科学机制真相：负向情绪完全大面积淹没理智区域，亲子安全防线受损导致拒绝接受指令输入。',
+                    C: '刚刚受到的责备让他感到了冷漠。他正蜷缩在伤心中，此时任何催促都像在伤口上撒盐。'
+                },
+                taboos: ['忽略其情绪直接推行作业要求', '指责孩子哭闹、悲伤的表情态度', '采用冷漠无视或言语威胁进行精神隔离'],
+                recommendation: '完全暂停学习。优先进行情绪接纳，重建亲子间的情感连接，修复安全感。',
+                scripts: '“我知道你现在心里特别委屈。作业先不看，妈妈先抱抱你，好一点了我们再说。”'
+            },
+            mixed: {
+                title: '综合阻力型',
+                revelation: {
+                    A: '主控因子：多源性阻力叠加。生理疲劳、情感防御、任务焦虑重度缠绕，神经元信号过载瘫痪。',
+                    B: '常规认知误区：孩子无可救药、全面摆烂。/ 科学机制真相：多重压力因子过载，理智脑因无法承受多目标压力而彻底停摆。',
+                    C: '他的大脑现在乱成了一团乱麻。疲惫、害怕、愤怒拧在了一起，需要先平复情绪。'
+                },
+                taboos: ['强拉孩子纠缠细节、字迹与姿势', '桌面堆满多科作业，施加正确率与速度双重压力', '寸步不离检查、频繁在旁边挑刺纠错'],
+                recommendation: '物理清空书桌。清空除单科单项外的所有物件，家长物理隔离，采取“先降温，后拆解”策略。',
+                scripts: '“今天状态有点乱。我们去洗洗脸，桌上先收干净。10分钟后，你自己只写5个字试试看。”'
+            }
+        };
+
+        const contextNarratives = {
+            after_school: '孩子刚放学回家，历经一整天高密度的注意资源消耗，大脑前额叶认知控制网络已濒临阈值极限，在这种状态下：',
+            after_game: '孩子刚刚从高度多巴胺刺激的娱乐场景中强行抽离，神经递质面临断崖式下跌，心理落差带来极大的防御冲动，在这种状态下：',
+            criticized: '孩子刚刚经历了严厉的批评或尖锐的语言对抗，压力荷尔蒙皮质醇处于峰值，防御本能已全面接管理性脑，在这种状态下：',
+            normal: '处于常规的时间转换点，虽然没有显著的外源性负面应激，但大脑在启动非习惯性任务时依然需要神经通路的重新动员，在这种状态下：'
+        };
+
+        // 5. 运行状态
+        let currentStep = 0;
+        let selectedAnswers = {};
+
+        // 6. 初始化加载
+        window.onload = function() {
+            updateABLabel();
+            renderView();
+        }
+
+        function updateABLabel() {
+            document.getElementById('p1-title').innerText = fissionCopyConfig[currentABVersion].title;
+        }
+
+        // 7. 页面流转逻辑
+        function renderView() {
+            document.getElementById('view-p1').classList.add('hidden');
+            document.getElementById('view-p2').classList.add('hidden');
+            document.getElementById('view-p3-p4').classList.add('hidden');
+            document.getElementById('view-p5').classList.add('hidden');
+            document.getElementById('view-thankyou').classList.add('hidden');
+
+            if (currentStep === 0) {
+                document.getElementById('view-p1').classList.remove('hidden');
+            } else if (currentStep >= 1 && currentStep <= 5) {
+                document.getElementById('view-p2').classList.remove('hidden');
+                renderQuestion();
+            } else if (currentStep === 6) {
+                document.getElementById('view-p3-p4').classList.remove('hidden');
+                renderResultView();
+            } else if (currentStep === 7) {
+                document.getElementById('view-p5').classList.remove('hidden');
+            } else if (currentStep === 8) {
+                document.getElementById('view-thankyou').classList.remove('hidden');
+            }
+        }
+
+        function startDiagnostic() {
+            currentStep = 1;
+            selectedAnswers = {};
+            renderView();
+        }
+
+        function renderQuestion() {
+            const qIndex = currentStep - 1;
+            const qData = questions[qIndex];
+
+            document.getElementById('progress-bar').style.width = (currentStep * 20) + '%';
+            document.getElementById('question-num').innerText = `问题 ${currentStep}/5`;
+            document.getElementById('question-title').innerText = qData.title;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full bg-white border-2 border-slate-200 text-slate-800 text-left py-4 px-5 rounded-2xl text-sm font-medium hover:border-brand-orange hover:bg-orange-50/10 active:bg-orange-50 transition-all duration-150 flex justify-between items-center";
+                btn.innerHTML = `
+                    <span>${opt.text}</span>
+                    <span class="w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center text-white text-xs">
+                        <span class="dot hidden w-2 h-2 rounded-full bg-brand-orange"></span>
+                    </span>
+                `;
+                btn.onclick = () => selectOption(qData.field, opt.value);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectOption(field, val) {
+            selectedAnswers[field] = val;
+            if (currentStep < 5) {
+                currentStep++;
+                renderView();
+            } else {
+                currentStep = 6;
+                renderView();
+            }
+        }
+
+        // 8. 精准计算核心判定算法 (四维打分判定)
+        function runDiagnosticAlgorithm(answers) {
+            let E = 0, O = 0, A = 0, H = 0;
+
+            // Q2: energy_state
+            if (answers.energy_state === 'tired' || answers.energy_state === 'sleepy') {
+                E += 3;
+            } else if (answers.energy_state === 'hungry') {
+                E += 2;
+                O += 1;
+            }
+
+            // Q3: emotion_state
+            if (answers.emotion_state === 'irritated') {
+                E += 1;
+                O += 2;
+            } else if (answers.emotion_state === 'angry') {
+                O += 3;
+            } else if (answers.emotion_state === 'anxious') {
+                A += 3;
+            } else if (answers.emotion_state === 'wronged') {
+                H += 3;
+            }
+
+            // Q4: task_pressure
+            if (answers.task_pressure === 'too_hard') {
+                A += 3;
+            } else if (answers.task_pressure === 'too_much') {
+                E += 1;
+                A += 2;
+            } else if (answers.task_pressure === 'no_time') {
+                O += 1;
+                A += 2;
+            } else if (answers.task_pressure === 'too_boring') {
+                O += 2;
+                A += 1;
+            }
+
+            // Q5: behavior_state
+            if (answers.behavior_state === 'staring') {
+                E += 2;
+                A += 1;
+            } else if (answers.behavior_state === 'delaying') {
+                O += 1;
+                A += 2;
+            } else if (answers.behavior_state === 'exploding') {
+                O += 3;
+            } else if (answers.behavior_state === 'escaping') {
+                O += 2;
+                A += 2;
+            }
+
+            // Q1 修正规则：若刚被批评，H维度（关系受伤度）追加 +1.5 修正分
+            if (answers.trigger_context === 'criticized') {
+                H += 1.5;
+            }
+
+            const scores = { low_energy: E, exploding: O, anxious: A, hurt: H };
+            const maxScore = Math.max(E, O, A, H);
+
+            let candidates = [];
+            for (let key in scores) {
+                if (scores[key] === maxScore && maxScore > 0) {
+                    candidates.push(key);
+                }
+            }
+
+            if (maxScore < 3 || candidates.length > 1) {
+                return 'mixed';
+            }
+
+            return candidates[0];
+        }
+
+        // 9. AI结果页渲染
+        function renderResultView() {
+            const resultKey = runDiagnosticAlgorithm(selectedAnswers);
+            const data = resultsDatabase[resultKey];
+
+            document.getElementById('card-user-id').innerText = userId;
+            document.getElementById('status-title').innerText = data.title;
+            
+            const triggerVal = selectedAnswers['trigger_context'];
+            document.getElementById('context-narrative').innerText = contextNarratives[triggerVal];
+
+            const taboosContainer = document.getElementById('status-taboos');
+            taboosContainer.innerHTML = '';
+            data.taboos.forEach(taboo => {
+                const li = document.createElement('li');
+                li.innerText = taboo;
+                taboosContainer.appendChild(li);
+            });
+
+            document.getElementById('status-recommendation').innerText = data.recommendation;
+            document.getElementById('status-scripts').innerText = data.scripts;
+
+            const variantArea = document.getElementById('variant-content-area');
+            variantArea.innerHTML = '';
+
+            const revelationText = data.revelation[currentABVersion];
+
+            if (currentABVersion === 'A') {
+                variantArea.className = "space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100";
+                variantArea.innerHTML = `
+                    <div class="flex items-center gap-1 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                        <span>📊 临床抗阻量化特征分析</span>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed font-mono">
+                        ${revelationText}
+                    </p>
+                `;
+            } else if (currentABVersion === 'B') {
+                const parts = revelationText.split('/');
+                const badPart = parts[0] || '诊断误区';
+                const goodPart = parts[1] || '科学机制真相';
+                variantArea.className = "grid grid-cols-2 gap-3";
+                variantArea.innerHTML = `
+                    <div class="bg-red-50/20 border border-red-100/50 p-3 rounded-lg">
+                        <span class="text-[10px] text-red-500 font-bold block">常规认知误区：</span>
+                        <p class="text-[11px] text-slate-600 font-medium mt-1">${badPart}</p>
+                    </div>
+                    <div class="bg-emerald-50/20 border border-emerald-100/50 p-3 rounded-lg">
+                        <span class="text-[10px] text-emerald-500 font-bold block">科学机制真相：</span>
+                        <p class="text-[11px] text-slate-700 font-medium mt-1">${goodPart}</p>
+                    </div>
+                `;
+            } else if (currentABVersion === 'C') {
+                variantArea.className = "space-y-1.5 py-1";
+                variantArea.innerHTML = `
+                    <div class="flex items-center gap-1.5 text-brand-orange text-xs font-semibold">
+                        <span>🎗 致妈妈的情感确认：</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed italic">
+                        “${revelationText}”
+                    </p>
+                `;
+            }
+        }
+
+        // 10. 埋点统计与行为留底 (写入本地 localStorage 闭环中)
+        function triggerSaveCard() {
+            const statsKey = `ab_metrics_ver_${currentABVersion}`;
+            let currentStats = JSON.parse(localStorage.getItem(statsKey)) || { save_clicks: 0, test_runs: 0 };
+            currentStats.save_clicks++;
+            localStorage.setItem(statsKey, JSON.stringify(currentStats));
+
+            document.getElementById('save-guide-modal').classList.remove('hidden');
+        }
+
+        function closeSaveGuide() {
+            document.getElementById('save-guide-modal').classList.add('hidden');
+        }
+
+        function goToFeedbackPage() {
+            currentStep = 7;
+            renderView();
+        }
+
+        function submitFeedback(val) {
+            const feedbackKey = `feedback_log_ver_${currentABVersion}`;
+            let logs = JSON.parse(localStorage.getItem(feedbackKey)) || [];
+            logs.push({
+                user_id: userId,
+                timestamp: Date.now(),
+                feedback_choice: val,
+                diagnosed_key: runDiagnosticAlgorithm(selectedAnswers)
+            });
+            localStorage.setItem(feedbackKey, JSON.stringify(logs));
+
+            currentStep = 8;
+            renderView();
+        }
+
+        function restartDiagnostic() {
+            currentStep = 0;
+            renderView();
+        }
+    </script>
+</body>
+</html>
