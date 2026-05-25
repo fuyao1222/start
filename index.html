@@ -42,12 +42,12 @@
             <section id="view-p1" class="space-y-8 py-10">
                 <div class="space-y-4 text-center">
                     <span class="inline-block bg-orange-100 text-brand-orange text-xs px-3 py-1.5 rounded-full font-medium tracking-wide">
-                        家庭学习状态进入诊断
+                        学习状态进入诊断
                     </span>
                     <h1 id="p1-title" class="text-3xl font-bold text-brand-slate leading-snug tracking-tight">
                         </h1>
                     <p class="text-brand-gray text-sm font-light">
-                        3分钟定位当下真实的进入阻力，结束无意义的权力消耗
+                        3分钟快速定位，结束无意义消耗
                     </p>
                 </div>
 
@@ -145,13 +145,13 @@
                     </div>
 
                     <div class="text-[8px] text-brand-gray text-center pt-1 border-t border-slate-100 leading-relaxed">
-                        本诊断仅用于判定当下进入学习时的阻碍等级，不作为人格或智力评估参考。
+                        诊断结果仅用于判定当下进入学习时的阻碍等级，不作为人格或智力评估参考。
                     </div>
                 </div>
 
                 <div class="pt-1 pb-4">
                     <button onclick="goToFeedbackPage()" class="w-full bg-slate-100 text-brand-slate py-3 px-6 rounded-xl font-medium hover:bg-slate-200 active:scale-[0.98] transition-transform text-center text-xs">
-                        我用过这个方法了，去反馈成效
+                        这个方法对我有用，我想反馈成效
                     </button>
                 </div>
             </section>
@@ -160,7 +160,7 @@
                 <div class="space-y-2">
                     <span class="inline-block bg-orange-100 text-brand-orange text-xs px-3 py-1 rounded-full font-medium">成效反馈</span>
                     <h2 class="text-2xl font-bold text-brand-slate">使用建议后，孩子有变化吗？</h2>
-                    <p class="text-brand-gray text-xs">您的反馈用于优化评分引擎本地判定修正分</p>
+                    <p class="text-brand-gray text-xs">您的反馈将用于优化评分引擎</p>
                 </div>
 
                 <div class="space-y-3 pt-4">
@@ -237,9 +237,9 @@
         const questions = [
             {
                 field: 'trigger_context',
-                title: '当前的前置场景是什么？',
+                title: '孩子现在的状态，更接近下面哪种？',
                 options: [
-                    { value: 'after_school', text: '刚放学/刚从辅导班回来' },
+                    { value: 'after_school', text: '刚放学或刚从辅导班回来' },
                     { value: 'after_game', text: '刚刚结束娱乐或游戏' },
                     { value: 'criticized', text: '刚刚被批评或发生语言冲突' },
                     { value: 'normal', text: '常规学习时间转换点' }
@@ -247,44 +247,44 @@
             },
             {
                 field: 'energy_state',
-                title: '孩子当前的能量状态？',
+                title: '孩子现在的身体状态，更接近下面哪种？',
                 options: [
-                    { value: 'tired', text: '很累' },
-                    { value: 'sleepy', text: '很困' },
-                    { value: 'hungry', text: '很饿' },
-                    { value: 'normal', text: '精力正常' }
+                    { value: 'tired', text: '没力气、蔫蔫的，不想动' },
+                    { value: 'sleepy', text: '打哈欠、揉眼睛，头都抬不起来' },
+                    { value: 'hungry', text: '喊饿、坐不住，一直惦记吃东西' },
+                    { value: 'normal', text: '精力正常，能坐得住写作业' }
                 ]
             },
             {
                 field: 'emotion_state',
-                title: '孩子当前的情绪表现？',
+                title: '孩子现在的情绪，更接近下面哪种？',
                 options: [
-                    { value: 'irritated', text: '烦躁' },
-                    { value: 'angry', text: '生气' },
-                    { value: 'anxious', text: '焦虑' },
-                    { value: 'wronged', text: '委屈' },
-                    { value: 'stable', text: '情绪稳定' }
+                    { value: 'irritated', text: '坐不住、不耐烦，一点小事就闹脾气' },
+                    { value: 'angry', text: '明显在发火、顶嘴、对着干' },
+                    { value: 'anxious', text: '紧张担心，总担心写不完、写不好' },
+                    { value: 'wronged', text: '眼圈红了、快哭了，觉得自己不被理解' },
+                    { value: 'stable', text: '情绪稳定，能正常沟通、写作业' }
                 ]
             },
             {
                 field: 'task_pressure',
-                title: '孩子如何认知当前的任务？',
+                title: '孩子对接下来要做的作业或任务，是什么感受？',
                 options: [
-                    { value: 'too_hard', text: '太难了' },
-                    { value: 'too_much', text: '太多了' },
+                    { value: 'too_hard', text: '题目太难了，不会做' },
+                    { value: 'too_much', text: '作业太多了，写不完' },
                     { value: 'no_time', text: '时间不够写不完' },
-                    { value: 'too_boring', text: '太枯燥没意思' },
+                    { value: 'too_boring', text: '内容太枯燥，不想做' },
                     { value: 'acceptable', text: '可以接受' }
                 ]
             },
             {
                 field: 'behavior_state',
-                title: '孩子当前的具体抗拒表现？',
+                title: '孩子不想写作业时，常出现哪种表现？',
                 options: [
-                    { value: 'staring', text: '呆坐在书桌前发呆/玩文具' },
+                    { value: 'staring', text: '坐书桌前发呆/玩文具' },
                     { value: 'delaying', text: '找各种借口无限磨洋工' },
-                    { value: 'exploding', text: '一提写作业就大叫/摔东西' },
-                    { value: 'escaping', text: '频繁要求上厕所/喝水离开书桌' }
+                    { value: 'exploding', text: '一提写作业就大叫/甚至摔东西' },
+                    { value: 'escaping', text: '不停找借口离开书桌（上厕所/喝水）' }
                 ]
             }
         ];
@@ -296,7 +296,7 @@
                 revelation: {
                     A: '主控因子：生理蓄能断层。前额叶决策与认知网络因化学能源消耗过度，处于系统硬性锁死状态。',
                     B: '常规认知误区：孩子故意磨蹭逃避。/ 科学机制真相：大脑在启动低电量自我防护，强行开机易导致认知短路。',
-                    C: '他现在精疲力竭了。身体亮起红灯时，哪怕一丁点儿任务也会成为压垮他的大山。'
+                    C: '孩子现在精疲力竭了。身体亮起红灯时，哪怕一丁点儿任务也会成为压垮孩子的大山。'
                 },
                 taboos: ['高频连续催促与时间警告', '强制要求立刻直面厚重作业本', '进行逻辑论证和长期后果说教'],
                 recommendation: '实施 15 分钟无条件缓冲。补充快速吸收的水分与少量糖分，随后以轻量级“微任务拆解”温和导入。',
@@ -318,7 +318,7 @@
                 revelation: {
                     A: '主控因子：评估任务难度超出其胜任认知，为避免负面挫败反馈产生的回避型拖延。',
                     B: '常规认知误区：孩子懒惰，不愿意动脑。/ 科学机制真相：高度害怕失败导致大脑选择用拖延自我保护，回避即将到来的否定痛苦。',
-                    C: '那些大块的空白作业本让他感到无助。因为怕写不好被责怪，他迟迟不敢下笔。'
+                    C: '那些大块的空白作业本让孩子感到无助。因为怕写不好被责怪，才迟迟不敢下笔。'
                 },
                 taboos: ['引入同龄孩子进行横向比较', '嘲讽其“这么简单你都不会”', '向其灌输无法按时写完带来的恐吓性后果'],
                 recommendation: '对任务难度进行物理裁剪。绝口不提进度，引导孩子只跨过极易完成的“第一笔”。',
@@ -329,7 +329,7 @@
                 revelation: {
                     A: '主控因子：关系性抗拒与情绪阻绝。言语冲突后，压力荷尔蒙皮质醇处于峰值，防御级别封锁理智。',
                     B: '常规认知误区：孩子任性，故意装委屈要挟。/ 科学机制真相：负向情绪完全大面积淹没理智区域，亲子安全防线受损导致拒绝接受指令输入。',
-                    C: '刚刚受到的责备让他感到了冷漠。他正蜷缩在伤心中，此时任何催促都像在伤口上撒盐。'
+                    C: '刚刚受到的责备让孩子感到了冷漠。孩子正蜷缩在伤心中，此时任何催促都像在伤口上撒盐。'
                 },
                 taboos: ['忽略其情绪直接推行作业要求', '指责孩子哭闹、悲伤的表情态度', '采用冷漠无视或言语威胁进行精神隔离'],
                 recommendation: '完全暂停学习。优先进行情绪接纳，重建亲子间的情感连接，修复安全感。',
@@ -340,7 +340,7 @@
                 revelation: {
                     A: '主控因子：多源性阻力叠加。生理疲劳、情感防御、任务焦虑重度缠绕，神经元信号过载瘫痪。',
                     B: '常规认知误区：孩子无可救药、全面摆烂。/ 科学机制真相：多重压力因子过载，理智脑因无法承受多目标压力而彻底停摆。',
-                    C: '他的大脑现在乱成了一团乱麻。疲惫、害怕、愤怒拧在了一起，需要先平复情绪。'
+                    C: '孩子的大脑现在乱成了一团乱麻。疲惫、害怕、愤怒拧在了一起，需要先平复情绪。'
                 },
                 taboos: ['强拉孩子纠缠细节、字迹与姿势', '桌面堆满多科作业，施加正确率与速度双重压力', '寸步不离检查、频繁在旁边挑刺纠错'],
                 recommendation: '物理清空书桌。清空除单科单项外的所有物件，家长物理隔离，采取“先降温，后拆解”策略。',
